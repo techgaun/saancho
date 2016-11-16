@@ -1,2 +1,3 @@
 # saancho
-Pure bash password manager
+
+> Command Line Password Manager

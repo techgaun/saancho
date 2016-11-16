@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# Author: @techgaun
+
+prog=$(basename $0)
+author="techgaun"
+desc="Brutally simple password manager for bash"
+version="0.0.1"
+red='\033[0;31m'
+green='\033[0;32m'
+nc='\033[0m'
+
+error() {
+    msg="${1:-$default_err}"
+    echo -e "${red}${msg}${nc}"
+    exit 1
+}
+
+msg() {
+    msg="${1:-nothing}"
+    echo -e "${green}${msg}${nc}"
+}
+
+is_debian() {
+    [[ -f "/usr/bin/apt-get" ]]
+}
+
+is_rhel() {
+    [[ -f "/usr/bin/yum" ]]
+}
+
+cmd=$(command -v gpg2 || command -v gpg)
+
+if [[ "$?" -ne "0" ]]; then
+  echo "Could not find gpg binary. Trying to install gpg..."
+  if is_debian; then
+    sudo apt install -y gnupg2
+    if [[ "$?" -ne "0" ]]; then
+      sudo apt install -y gnupg
+    fi
+  elif is_rhel; then
+    sudo yum install -y gnupg2
+    if [[ "$?" -ne "0" ]]; then
+      sudo yum install -y gnupg
+    fi
+  else
+    error "Unknown distribution. Please install gnupg2/gnupg for your distribution and use ${prog}."
+  fi
+fi
