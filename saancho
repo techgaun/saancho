@@ -29,6 +29,10 @@ is_rhel() {
     [[ -f "/usr/bin/yum" ]]
 }
 
+is_arch() {
+    [[ -f "/usr/bin/pacman" ]]
+}
+
 cmd=$(command -v gpg2 || command -v gpg)
 
 if [[ "$?" -ne "0" ]]; then
@@ -43,6 +47,8 @@ if [[ "$?" -ne "0" ]]; then
     if [[ "$?" -ne "0" ]]; then
       sudo yum install -y gnupg
     fi
+  elif is_arch; then
+      sudo pacman -S gnupg
   else
     error "Unknown distribution. Please install gnupg2/gnupg for your distribution and use ${prog}."
   fi
