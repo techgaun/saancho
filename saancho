@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# Author: @techgaun
-
 prog=$(basename $0)
 author="techgaun"
 desc="Brutally simple password manager for bash"
@@ -9,6 +7,8 @@ version="0.0.1"
 red='\033[0;31m'
 green='\033[0;32m'
 nc='\033[0m'
+
+password_path="${HOME}/.saancho.gpg"
 
 error() {
     msg="${1:-$default_err}"
@@ -52,4 +52,9 @@ if [[ "$?" -ne "0" ]]; then
   else
     error "Unknown distribution. Please install gnupg2/gnupg for your distribution and use ${prog}."
   fi
+fi
+
+if [[ ! -e "${password_path}" ]]; then
+  msg "Saancho store does not exist. Creating..."
+  password=""
 fi
