@@ -57,4 +57,8 @@ fi
 if [[ ! -e "${password_path}" ]]; then
   msg "Saancho store does not exist. Creating..."
   password=""
+  while [[ "x" == "x${password}" ]]; do
+    read -s -p "Enter the passphrase for your saancho store: " password
+    echo ""
+  done
 fi
