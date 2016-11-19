@@ -62,5 +62,5 @@ if [[ ! -e "${password_file}" ]]; then
     echo ""
   done
   touch $password_file
-  echo $password | ${cmd} --passphrase-fd 0 --batch $password_file
+  echo $password | ${cmd} --passphrase-fd 0 --batch $password_file || rm -f $password_file
 fi
