@@ -8,7 +8,7 @@ red='\033[0;31m'
 green='\033[0;32m'
 nc='\033[0m'
 
-password_path="${HOME}/.saancho.gpg"
+password_file="${HOME}/.saancho.gpg"
 
 error() {
     msg="${1:-$default_err}"
@@ -54,11 +54,13 @@ if [[ "$?" -ne "0" ]]; then
   fi
 fi
 
-if [[ ! -e "${password_path}" ]]; then
+if [[ ! -e "${password_file}" ]]; then
   msg "Saancho store does not exist. Creating..."
   password=""
   while [[ "x" == "x${password}" ]]; do
     read -s -p "Enter the passphrase for your saancho store: " password
     echo ""
   done
+  touch $password_file
+  echo $password | ${cmd} --passphrase-fd 0 --batch $password_file
 fi
