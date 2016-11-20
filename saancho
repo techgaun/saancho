@@ -25,6 +25,11 @@ msg() {
     echo -e "${green}${msg}${nc}"
 }
 
+check_invalid() {
+  msg="${2:-Invalid passphrase. Exiting!!!}"
+  [[ "$1" == "0" ]] || die "\n${msg}"
+}
+
 is_debian() {
     [[ -f "/usr/bin/apt-get" ]]
 }
@@ -57,7 +62,11 @@ saancho_create() {
   password=""
   read -s -p "Enter the password for your credential: " password
   cred="${title}\t${uname}\t${password}"
-  prev_creds=$(decrypt $passphrase)
+  prev_creds=""
+  if [[ -e "${password_file}" ]]; then
+    prev_creds=$(decrypt $passphrase)
+    check_invalid $?
+  fi
   encrypt $passphrase "${prev_creds}\n${cred}"
 }
 
@@ -77,6 +86,7 @@ saancho_delete() {
   identifier=""
   read -p "Enter the identifier to delete: " identifier
   rem=$(decrypt $passphrase | grep -vE "^${identifier}$(printf '\t')")
+  check_invalid $?
   encrypt $passphrase $rem
 }
 
