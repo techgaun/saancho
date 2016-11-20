@@ -33,6 +33,25 @@ is_arch() {
     [[ -f "/usr/bin/pacman" ]]
 }
 
+saancho_create() {
+  title=""
+  read -p "Enter the identifier for your user: " title
+}
+
+saancho_read() {
+  search=""
+  read -p "Enter the search term(username or identifier): " search
+}
+
+saancho_delete() {
+  identifier=""
+  read -p "Enter the identifier to delete: " identifier
+}
+
+saancho_backup() {
+  msg "Performing backup of ${password_file}"
+}
+
 cmd=$(command -v gpg2 || command -v gpg)
 
 if [[ "$?" -ne "0" ]]; then
@@ -81,7 +100,15 @@ while [[ "${choice}" != "e" ]]; do
   echo -e "\tb - backup credential"
   echo -e "\te - exit Saancho\n"
 
-  read -N1 -p "Enter the action you wish to perform: " choice
+  read -p "Enter the action you wish to perform: " choice
+  echo ""
+  case "${choice}" in
+    c|C) saancho_create;;
+    r|R) saancho_read;;
+    d|D) saancho_delete;;
+    b|B) saancho_backup;;
+    *) choice="e";;
+  esac
 done
 
-msg "\n\nExiting saancho!!!"
+msg "\nExiting saancho!!!"
