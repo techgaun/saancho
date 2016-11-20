@@ -61,6 +61,5 @@ if [[ ! -e "${password_file}" ]]; then
     read -s -p "Enter the passphrase for your saancho store: " password
     echo ""
   done
-  touch $password_file
-  echo $password | ${cmd} --passphrase-fd 0 --batch $password_file || rm -f $password_file
+  echo $password | ${cmd} --yes --symmetric --passphrase-fd 0 --batch --output $password_file || rm -f $password_file
 fi
