@@ -8,12 +8,10 @@ Implementation of Saancho is plain simple. All it does is use a file (defaults t
 
 ## Installation
 
-- Fire up your terminal:
+- Fire up your terminal and copy and run the following command:
 
 ```shell
-$ wget "https://raw.githubusercontent.com/nepalihackers/saancho/master/saancho" -O /usr/bin/saancho
-
-$ chmod +x /usr/bin/saancho
+sudo wget "https://raw.githubusercontent.com/nepalihackers/saancho/master/saancho" -O /usr/bin/saancho && sudo chmod +x /usr/bin/saancho
 ```
 
 ## Usage
