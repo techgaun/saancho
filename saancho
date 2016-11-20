@@ -2,7 +2,7 @@
 
 prog=$(basename $0)
 author="techgaun"
-desc="Brutally simple password manager for bash"
+desc="Brutally simple command-line password manager"
 version="0.0.1"
 red='\033[0;31m'
 green='\033[0;32m'
@@ -33,17 +33,38 @@ is_arch() {
     [[ -f "/usr/bin/pacman" ]]
 }
 
+encrypt() {
+  passphrase="${1}"
+  cred="${2}"
+  echo -e $cred | ${cmd} --yes --symmetric --passphrase-fd 7 --batch --output $password_file - 7< <(echo "${passphrase}")
+}
+
+decrypt() {
+  passphrase="${1}"
+  echo "${passphrase}" | ${cmd} --decrypt --batch --passphrase-fd 0 $password_file 2> /dev/null
+}
+
 saancho_create() {
+  passphrase="${1}"
   title=""
-  read -p "Enter the identifier for your user: " title
+  read -p "Enter the identifier for your credential: " title
+  uname=""
+  read -p "Enter the username for your credential: " uname
+  password=""
+  read -s -p "Enter the password for your credential: " password
+  cred="${title}\t${uname}\t${password}"
+  encrypt $passphrase $cred
 }
 
 saancho_read() {
+  passphrase="${1}"
   search=""
   read -p "Enter the search term(username or identifier): " search
+  decrypt $passphrase
 }
 
 saancho_delete() {
+  passphrase="${1}"
   identifier=""
   read -p "Enter the identifier to delete: " identifier
 }
@@ -69,19 +90,8 @@ if [[ "$?" -ne "0" ]]; then
   elif is_arch; then
       sudo pacman -S gnupg
   else
-    error "Unknown distribution. Please install gnupg2/gnupg for your distribution and use ${prog}."
+    error "Unknown distribution. Please install gnugpg2/gnugpg for your distribution and use ${prog}."
   fi
-fi
-
-if [[ ! -e "${password_file}" ]]; then
-  msg "Saancho store does not exist. Creating..."
-  password=""
-  while [[ "x" == "x${password}" ]]; do
-    read -s -p "Enter new passphrase to create your saancho store: " password
-    echo ""
-  done
-  echo $password | ${cmd} --yes --symmetric --passphrase-fd 0 --batch --output $password_file || rm -f $password_file
-  msg "Initialized saancho. Saancho store saved in ${password_file}"
 fi
 
 passphrase=""
@@ -103,9 +113,9 @@ while [[ "${choice}" != "e" ]]; do
   read -p "Enter the action you wish to perform: " choice
   echo ""
   case "${choice}" in
-    c|C) saancho_create;;
-    r|R) saancho_read;;
-    d|D) saancho_delete;;
+    c|C) saancho_create "${passphrase}";;
+    r|R) saancho_read "${passphrase}";;
+    d|D) saancho_delete "${passphrase}";;
     b|B) saancho_backup;;
     *) choice="e";;
   esac
