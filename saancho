@@ -8,7 +8,7 @@ red='\033[0;31m'
 green='\033[0;32m'
 nc='\033[0m'
 
-password_file="${HOME}/.saancho.gpg"
+password_file="${SAANCHO_FILE:-${HOME}/.saancho.gpg}"
 
 error() {
     msg="${1}"
@@ -45,12 +45,14 @@ is_arch() {
 encrypt() {
   passphrase="${1}"
   creds="${2}"
-  echo -e "${creds}" | ${cmd} --yes --symmetric --passphrase-fd 7 --batch --output $password_file - 7< <(echo "${passphrase}")
+  echo -e "${creds}" | ${cmd} --cipher-algo AES256 --yes --symmetric \
+    --passphrase-fd 7 --batch --output $password_file - 7< <(echo "${passphrase}")
 }
 
 decrypt() {
   passphrase="${1}"
-  echo "${passphrase}" | ${cmd} --decrypt --batch --passphrase-fd 0 $password_file 2> /dev/null
+  echo "${passphrase}" | ${cmd} --cipher-algo AES256 --decrypt --batch \
+    --passphrase-fd 0 $password_file 2> /dev/null
 }
 
 saancho_create() {
@@ -111,7 +113,7 @@ if [[ "$?" -ne "0" ]]; then
   elif is_arch; then
       sudo pacman -S gnupg
   else
-    die "Unknown distribution. Please install gnugpg2/gnugpg for your distribution and use ${prog}."
+    die "Unknown distribution. Please install gnupg2/gnupg for your distribution and use ${prog}."
   fi
 fi
 
