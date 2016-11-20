@@ -58,8 +58,30 @@ if [[ ! -e "${password_file}" ]]; then
   msg "Saancho store does not exist. Creating..."
   password=""
   while [[ "x" == "x${password}" ]]; do
-    read -s -p "Enter the passphrase for your saancho store: " password
+    read -s -p "Enter new passphrase to create your saancho store: " password
     echo ""
   done
   echo $password | ${cmd} --yes --symmetric --passphrase-fd 0 --batch --output $password_file || rm -f $password_file
+  msg "Initialized saancho. Saancho store saved in ${password_file}"
 fi
+
+passphrase=""
+read -s -p "Enter the passphrase for your saancho store: " passphrase
+
+if [[ "x" == "x${passphrase}" ]]; then
+  error "Invalid passphrase specified. Exiting!"
+fi
+
+choice=""
+while [[ "${choice}" != "e" ]]; do
+  echo -e "\n\nOptions available\n"
+  echo -e "\tc - create new credential"
+  echo -e "\tr - read existing credential"
+  echo -e "\td - delete credential"
+  echo -e "\tb - backup credential"
+  echo -e "\te - exit Saancho\n"
+
+  read -N1 -p "Enter the action you wish to perform: " choice
+done
+
+msg "\n\nExiting saancho!!!"
