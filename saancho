@@ -11,9 +11,13 @@ nc='\033[0m'
 password_file="${HOME}/.saancho.gpg"
 
 error() {
-    msg="${1:-$default_err}"
+    msg="${1}"
     echo -e "${red}${msg}${nc}"
-    exit 1
+}
+
+die() {
+  error "$@"
+  exit 1
 }
 
 msg() {
@@ -35,8 +39,8 @@ is_arch() {
 
 encrypt() {
   passphrase="${1}"
-  cred="${2}"
-  echo -e $cred | ${cmd} --yes --symmetric --passphrase-fd 7 --batch --output $password_file - 7< <(echo "${passphrase}")
+  creds="${2}"
+  echo -e "${creds}" | ${cmd} --yes --symmetric --passphrase-fd 7 --batch --output $password_file - 7< <(echo "${passphrase}")
 }
 
 decrypt() {
@@ -53,24 +57,31 @@ saancho_create() {
   password=""
   read -s -p "Enter the password for your credential: " password
   cred="${title}\t${uname}\t${password}"
-  encrypt $passphrase $cred
+  prev_creds=$(decrypt $passphrase)
+  encrypt $passphrase "${prev_creds}\n${cred}"
 }
 
 saancho_read() {
   passphrase="${1}"
   search=""
   read -p "Enter the search term(username or identifier): " search
-  decrypt $passphrase
+  echo ""
+  { echo -e "Identifier\tUsername\tPassword"; decrypt $passphrase | \
+    grep -E "^${search}.*|^.*$(printf '\t')${search}.*"; } | column -t
+  echo ""
+  read -n1 -p "Press ENTER to continue"
 }
 
 saancho_delete() {
   passphrase="${1}"
   identifier=""
   read -p "Enter the identifier to delete: " identifier
+  rem=$(decrypt $passphrase | grep -vE "^${identifier}$(printf '\t')")
+  encrypt $passphrase $rem
 }
 
 saancho_backup() {
-  msg "Performing backup of ${password_file}"
+  msg "Performing backup of ${password_file}\nThis feature is yet to be implemented!"
 }
 
 cmd=$(command -v gpg2 || command -v gpg)
@@ -90,7 +101,7 @@ if [[ "$?" -ne "0" ]]; then
   elif is_arch; then
       sudo pacman -S gnupg
   else
-    error "Unknown distribution. Please install gnugpg2/gnugpg for your distribution and use ${prog}."
+    die "Unknown distribution. Please install gnugpg2/gnugpg for your distribution and use ${prog}."
   fi
 fi
 
@@ -98,7 +109,7 @@ passphrase=""
 read -s -p "Enter the passphrase for your saancho store: " passphrase
 
 if [[ "x" == "x${passphrase}" ]]; then
-  error "Invalid passphrase specified. Exiting!"
+  die "Invalid passphrase specified. Exiting!"
 fi
 
 choice=""
