@@ -92,6 +92,14 @@ saancho_delete() {
   encrypt $passphrase $rem
 }
 
+store_init() {
+  confirm=""
+  read -p "Are you sure you wish to remove existing credential store? (y/n): " confirm
+  if [[ "${confirm}" =~ [yY] ]]; then
+    rm -f $password_file && msg "Successfully removed credential store"
+  fi
+}
+
 saancho_backup() {
   msg "Performing backup of ${password_file}\nThis feature is yet to be implemented!"
 }
@@ -130,7 +138,8 @@ while [[ "${choice}" != "e" ]]; do
   echo -e "\tc - create new credential"
   echo -e "\tr - read existing credential"
   echo -e "\td - delete credential"
-  echo -e "\tb - backup credential"
+  echo -e "\tb - backup credentials"
+  echo -e "\ti - delete credential file(re-initialize)"
   echo -e "\te - exit Saancho\n"
 
   read -p "Enter the action you wish to perform: " choice
@@ -140,6 +149,7 @@ while [[ "${choice}" != "e" ]]; do
     r|R) saancho_read "${passphrase}";;
     d|D) saancho_delete "${passphrase}";;
     b|B) saancho_backup;;
+    i|I) store_init;;
     *) choice="e";;
   esac
 done

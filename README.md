@@ -28,6 +28,7 @@ Options available
 	r - read existing credential
 	d - delete credential
 	b - backup credential
+  i - delete credential file(re-initialize)
 	e - exit Saancho
 
 Enter the action you wish to perform:
