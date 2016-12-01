@@ -55,6 +55,11 @@ decrypt() {
     --passphrase-fd 0 $password_file 2> /dev/null
 }
 
+random_gen() {
+  plen=${1:-30}
+  ${cmd} --armour --gen-random 0 "${plen}" | cut -c -"${plen}"
+}
+
 saancho_create() {
   passphrase="${1}"
   title=""
@@ -62,7 +67,17 @@ saancho_create() {
   uname=""
   read -p "Enter the username for your credential: " uname
   password=""
-  read -s -p "Enter the password for your credential: " password
+  read -s -p "Enter the password for your credential(press ENTER for random password): " password
+  if [[ "x${password}" == "x" ]]; then
+    echo ""
+    read -p "Enter the length of password(default: 30): " plen
+    if [[ ! "${plen}" =~ ^[0-9]{1,2}$ ]]; then
+      plen="30"
+    fi
+    password=$(random_gen $plen)
+    echo ""
+    echo "Your randomly generated password is: ${password}"
+  fi
   cred="${title}\t${uname}\t${password}"
   prev_creds=""
   if [[ -e "${password_file}" ]]; then
