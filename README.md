@@ -38,6 +38,6 @@ The keystore is saved at `$HOME/.saancho.gpg` but if you wish to customize that,
 
 ## To Do
 
-- Implement random password generation
+- ~~Implement random password generation~~
 - Implement backup feature to backup to one of the cloud services (yet to figure out what service)
 - Implement Copy to clipboard option
