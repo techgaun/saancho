@@ -36,6 +36,34 @@ Enter the action you wish to perform:
 
 The keystore is saved at `$HOME/.saancho.gpg` but if you wish to customize that, you can set `$SAANCHO_FILE` environment variable to whatever path you wish.
 
+## Development
+
+There's a [Dockerfile](Dockerfile) that you can use to locally test saancho during development.
+
+##### Build a docker image
+
+```shell
+docker build -t nepalihackers/saancho .
+```
+
+##### Run the image
+
+```shell
+docker run --name s1 -it nepalihackers/saancho saancho
+```
+
+##### Restart if you exit the container
+
+```shell
+docker start s1
+```
+
+##### Execute saancho again
+
+```shell
+docker exec -it s1 saancho
+```
+
 ## To Do
 
 - ~~Implement random password generation~~
