@@ -102,9 +102,14 @@ saancho_delete() {
   passphrase="${1}"
   identifier=""
   read -p "Enter the identifier to delete: " identifier
-  rem=$(decrypt $passphrase | grep -vE "^${identifier}$(printf '\t')")
-  check_invalid $?
-  encrypt "${passphrase}" "${rem}"
+  confirm=""
+  read -p "Are you sure you wish to remove ${identifier}? (y/n): " confirm
+  if [[ "${confirm}" =~ [yY] ]]; then
+    rem=$(decrypt $passphrase | grep -vE "^${identifier}$(printf '\t')")
+    check_invalid $?
+    encrypt "${passphrase}" "${rem}"
+    msg "Credential for ${identifier} removed!"
+  fi
 }
 
 store_init() {
