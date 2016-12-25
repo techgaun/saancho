@@ -104,7 +104,7 @@ saancho_delete() {
   read -p "Enter the identifier to delete: " identifier
   rem=$(decrypt $passphrase | grep -vE "^${identifier}$(printf '\t')")
   check_invalid $?
-  encrypt $passphrase $rem
+  encrypt "${passphrase}" "${rem}"
 }
 
 store_init() {
