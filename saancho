@@ -92,8 +92,17 @@ saancho_read() {
   search=""
   read -p "Enter the search term(username or identifier): " search
   echo ""
-  { echo -e "Identifier\tUsername\tPassword"; decrypt $passphrase | \
-    grep -E "^${search}.*|^.*$(printf '\t')${search}.*"; } | column -t
+  search_result=$(decrypt $passphrase | grep -E "^${search}.*|^.*$(printf '\t')${search}.*"; )
+
+  { echo -e "Identifier\tUsername\tPassword"; echo $search_result; } | column -t
+
+  xsel_cmd=$(command -v xsel)
+  if [[ "$?" -eq "0" && $(wc -l <<< $search_result) == 1 && "${SAANCHO_CLIPBOARD}" == "true" ]]; then
+    credential=$(cut -d " " -f3- <<< $search_result)
+    echo $credential | $xsel_cmd -ib
+    echo ""
+    echo "Single result returned. ${credential} has been copied to clipboard for your convenience."
+  fi
   echo ""
   read -n1 -p "Press ENTER to continue"
 }

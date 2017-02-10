@@ -34,7 +34,9 @@ Options available
 Enter the action you wish to perform:
 ```
 
-The keystore is saved at `$HOME/.saancho.gpg` but if you wish to customize that, you can set `$SAANCHO_FILE` environment variable to whatever path you wish.
+- The keystore is saved at `$HOME/.saancho.gpg` but if you wish to customize that, you can set `$SAANCHO_FILE` environment variable to whatever path you wish.
+- Saancho can copy password to your clipboard automatically if your search yields single result. This is not enabled by default and can be enabled
+by setting `SAANCHO_CLIPBOARD` env-var to `true`
 
 ## Development
 
@@ -68,4 +70,4 @@ docker exec -it s1 saancho
 
 - ~~Implement random password generation~~
 - Implement backup feature to backup to one of the cloud services (yet to figure out what service)
-- Implement Copy to clipboard option
+- ~~Implement Copy to clipboard option~~
