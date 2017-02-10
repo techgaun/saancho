@@ -38,6 +38,13 @@ Enter the action you wish to perform:
 - Saancho can copy password to your clipboard automatically if your search yields single result. This is not enabled by default and can be enabled
 by setting `SAANCHO_CLIPBOARD` env-var to `true`
 
+## Features
+
+- safe storage of password data (make sure to choose good passphrase)
+- create/search/read/delete credentials
+- random password generation
+- copy to clipboard feature for single search results
+
 ## Development
 
 There's a [Dockerfile](Dockerfile) that you can use to locally test saancho during development.
