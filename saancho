@@ -3,7 +3,7 @@
 prog=$(basename $0)
 author="techgaun"
 desc="Brutally simple command-line password manager"
-version="0.0.1"
+version="0.1.0"
 red='\033[0;31m'
 green='\033[0;32m'
 nc='\033[0m'
@@ -183,4 +183,4 @@ while [[ "${choice}" != "e" ]]; do
   esac
 done
 
-msg "\nExiting saancho!!!"
+msg "\nExiting saancho ${version}!!!"
