@@ -135,6 +135,28 @@ store_init() {
   fi
 }
 
+store_chpassphrase() {
+  passphrase_confirm=""
+  new_passphrase=""
+  new_passphrase_confirm=""
+  read -s -p "Enter the current passphrase: " passphrase_confirm
+
+  prev_creds=$(decrypt $passphrase_confirm)
+  check_invalid $?
+  echo ""
+  read -s -p "Enter the new passphrase: " new_passphrase
+  echo ""
+  read -s -p "Confirm the new passphrase: " new_passphrase_confirm
+  echo ""
+
+  if [[ "${new_passphrase}x" != "x" && "${new_passphrase}" == "${new_passphrase_confirm}" ]]; then
+    encrypt $new_passphrase "${prev_creds}"
+    msg "Changed the passphrase of saancho keystore"
+  else
+    error "You provided empty passphrase or passphrase and confirmation don't match"
+  fi
+}
+
 saancho_backup() {
   msg "Performing backup of ${password_file}\nThis feature is yet to be implemented!"
 }
@@ -175,6 +197,7 @@ while [[ "${choice}" != "e" ]]; do
   echo -e "\td - delete credential"
   echo -e "\tb - backup credentials"
   echo -e "\ti - delete credential file(re-initialize)"
+  echo -e "\tp - change the passphrase for saancho"
   echo -e "\te - exit Saancho\n"
 
   read -p "Enter the action you wish to perform: " choice
@@ -185,6 +208,7 @@ while [[ "${choice}" != "e" ]]; do
     d|D) saancho_delete "${passphrase}";;
     b|B) saancho_backup;;
     i|I) store_init;;
+    p|P) store_chpassphrase;;
     *) choice="e";;
   esac
 done
