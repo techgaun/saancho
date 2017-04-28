@@ -151,7 +151,8 @@ store_chpassphrase() {
 
   if [[ "${new_passphrase}x" != "x" && "${new_passphrase}" == "${new_passphrase_confirm}" ]]; then
     encrypt $new_passphrase "${prev_creds}"
-    msg "Changed the passphrase of saancho keystore"
+    msg "Changed the passphrase of saancho keystore. Please run saancho again with new passphrase. Exiting!!!"
+    exit 0
   else
     error "You provided empty passphrase or passphrase and confirmation don't match"
   fi
