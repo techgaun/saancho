@@ -75,8 +75,14 @@ saancho_create() {
       plen="30"
     fi
     password=$(random_gen $plen)
+    xsel_cmd=$(command -v xsel)
+    copy_msg=""
+    if [[ "$?" -eq "0" && "${SAANCHO_CLIPBOARD}" == "true" ]]; then
+      echo $password | $xsel_cmd -ib
+      copy_msg=" and has been copied to clipboard."
+    fi
     echo ""
-    echo "Your randomly generated password is: ${password}"
+    echo "Your randomly generated password is: ${password}${copy_msg}"
   fi
   cred="${title}\t${uname}\t${password}"
   prev_creds=""
