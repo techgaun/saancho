@@ -103,11 +103,13 @@ saancho_read() {
   { echo -e "Identifier\tUsername\tPassword"; echo -e "$search_result"; } | column -t
 
   xsel_cmd=$(command -v xsel)
-  if [[ "$?" -eq "0" && $(wc -l <<< "$search_result") == 1 && "${search_result}" != "" && "${SAANCHO_CLIPBOARD}" == "true" ]]; then
-    credential=$(cut -d " " -f3- <<< $search_result)
-    echo $credential | $xsel_cmd -ib
-    echo ""
-    msg "Single result returned. ${credential} has been copied to clipboard for your convenience."
+  if [[ "$?" -eq "0" && "${search_result}" != "" ]]; then
+    if [[ $(wc -l <<< "$search_result") == 1 && "${SAANCHO_CLIPBOARD}" == "true" ]]; then
+      credential=$(cut -d " " -f3- <<< $search_result)
+      echo $credential | $xsel_cmd -ib
+      echo ""
+      msg "Single result returned. ${credential} has been copied to clipboard for your convenience."
+    fi
   else
     error "No search result returned. Make sure you entered correct passphrase."
   fi
